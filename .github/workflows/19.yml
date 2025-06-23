@@ -8,7 +8,7 @@
 # See /LICENSE for more information.
 #
 
-name: 13
+name: 19
 
 on:
   repository_dispatch:
@@ -18,7 +18,7 @@ env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: 13.config
+  CONFIG_FILE: 19.config
   DEVICE: x86_64
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
@@ -26,7 +26,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Maximize build space
