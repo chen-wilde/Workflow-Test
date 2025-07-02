@@ -9,8 +9,10 @@
 # See /LICENSE for more information.
 #
 
-mkdir -p files/etc/config
-cat > files/etc/config/tailscale << EOF
+mkdir -p files/etc/{config,cloudflared}
+cd files/etc/config
+
+cat > tailscale << EOF
 
 config tailscale 'settings'
     option enabled '1'
@@ -29,8 +31,9 @@ config tailscale 'settings'
     list flags '--auth-key=$auth_key'
 EOF
 
-echo "$FRPC_CONFIG" > files/etc/config/frpc
-echo "$TUNNEL_CONFIG" > files/etc/config/cloudflared
-echo "$ZEROTIER_CONFIG" > files/etc/config/zerotier
+echo "$FRPC_CONFIG" > frpc
+echo "$TUNNEL_CONFIG" > cloudflared
+echo "$TUNNEL_CERT" > files/etc/cloudflared/cert.pem
+echo "$ZEROTIER_CONFIG" > zerotier
 
 sed -i "s/\\\$1\\\$[^:]*:0:/$LEDE_PASSWD/g" package/lean/default-settings/files/zzz-default-settings
