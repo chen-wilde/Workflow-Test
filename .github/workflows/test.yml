@@ -24,13 +24,12 @@ env:
   DIY_P2_SH: diy-part2.sh
   UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: true
-  UPLOAD_ONEDRIVE: false
   ONEDRIVE_DIR: onedrive:/Build/Actions
   TZ: Asia/Shanghai
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
     - name: Maximize build space
@@ -87,18 +86,11 @@ jobs:
       run: cd openwrt && ./scripts/feeds install -a
 
     - name: Load custom configuration
-      env:
-        FRPC_CONFIG: ${{ secrets.FRPC_CONFIG }}
-        TUNNEL_CONFIG: ${{ secrets.TUNNEL_CONFIG }}
-        TUNNEL_CERT: ${{ secrets.TUNNEL_CERT }}
-        ZEROTIER_CONFIG: ${{ secrets.ZEROTIER_CONFIG }}
-        LEDE_PASSWD: ${{ secrets.LEDE_PASSWD }}
       run: |
         [ -e files ] && mv files openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
-        chmod +x remote.sh $DIY_P2_SH
+        chmod +x $DIY_P2_SH
         cd openwrt
-        $GITHUB_WORKSPACE/remote.sh
         $GITHUB_WORKSPACE/$DIY_P2_SH
 
     - name: Download package
@@ -159,14 +151,6 @@ jobs:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
-
-    - name: Upload firmware to onedrive
-      if: env.UPLOAD_ONEDRIVE == 'true' && steps.compile.outputs.status == 'success' && !cancelled()
-      run: |
-        curl https://rclone.org/install.sh | sudo bash
-        mkdir -p ~/.config/rclone
-        echo '${{ secrets.RCLONE_CONFIG }}' > ~/.config/rclone/rclone.conf
-        rclone copy openwrt/bin/targets/*/* $ONEDRIVE_DIR/$(date +"%Y%m%d")/$DEVICE
 
     - name: Delete workflow runs
       uses: Mattraks/delete-workflow-runs@main
