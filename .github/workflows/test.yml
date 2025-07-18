@@ -8,7 +8,7 @@
 # See /LICENSE for more information.
 #
 
-name: Build R2S firmware
+name: Build x86_64 firmware
 
 on:
   repository_dispatch:
@@ -18,8 +18,8 @@ env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: r2s.config
-  DEVICE: NanoPi_R2S
+  CONFIG_FILE: x86_64.config
+  DEVICE: x86_64
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
   UPLOAD_FIRMWARE: true
@@ -69,7 +69,7 @@ jobs:
       uses: klever1988/cachewrtbuild@main
       with:
         ccache: 'true'
-        mixkey: 'r2s'
+        mixkey: 'x86_64'
         prefix: ${{ github.workspace }}/openwrt
 
     - name: Load custom feeds
