@@ -52,8 +52,8 @@ jobs:
         key: commitHash_${{ steps.getHash.outputs.commitHash }}
         restore-keys: commitHash
 
-    - name: Debug Cache Hit  # 临时调试，确认值；测试后移除
-      run: echo "Rclone cache-hit: '${{ steps.rcloneCache.outputs.cache-hit }}' (length: ${{ steps.rcloneCache.outputs.cache-hit != '' && 'non-empty' || 'empty' }})"
+    - name: Debug Cache Hit
+      run: echo "Rclone cache-hit value:${{ steps.rcloneCache.outputs.cache-hit }}"
       
     - name: No Rclone Cache
       if: steps.rcloneCache.outputs.cache-hit == 'false'
