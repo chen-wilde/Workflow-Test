@@ -56,7 +56,7 @@ jobs:
       run: echo "Rclone cache-hit value:${{ steps.rcloneCache.outputs.cache-hit }}"
       
     - name: No Rclone Cache
-      if: steps.rcloneCache.outputs.cache-hit == 'false'
+      if: steps.rcloneCache.outputs.cache-hit != 'true'
       run: |
         mkdir -p ~/.config/rclone
         echo '${{ secrets.RCLONE_CONFIG }}' > ~/.config/rclone/rclone.conf
