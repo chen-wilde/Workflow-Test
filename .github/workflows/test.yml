@@ -64,7 +64,7 @@ jobs:
         curl https://rclone.org/install.sh | sudo bash
         rclone about onedrive:
         EXPIRY=$(jq -r '.expiry' <(sed -En 's/.*token = (.*)/\1/p' ~/.config/rclone/rclone.conf) | date -f - +%y%m%d%H)
-        echo 'expiry=$EXPIRY' >> $GITHUB_OUTPUT
+        echo "expiry=$EXPIRY" >> $GITHUB_OUTPUT
 
     - name: Save Rclone Cache
       uses: actions/cache/save@main
