@@ -46,7 +46,7 @@ jobs:
 
     - name: Restore Rclone Cache
       id: rcloneCache
-      uses: actions/cache/restore@main
+      uses: actions/cache@main
       with:
         path: ~/.config/rclone/rclone.conf
         key: commitHash_${{ steps.getHash.outputs.commitHash }}
