@@ -11,8 +11,8 @@
 name: Update Checker
 
 env:
-  REPO_PATH: chen-wilde/Workflow-Test
-  REPO_BRANCH: main
+  REPO_PATH: coolsnowwolf/lede
+  REPO_BRANCH: master
 
 on:
   workflow_dispatch:
@@ -25,10 +25,37 @@ jobs:
 
     steps:
 
+    - name: Restore Rclone Cache
+      id: restoreCache
+      uses: actions/cache/restore@main
+      with:
+        path: ~/.config/rclone/rclone.conf
+        key: rcloneConf
+
+    - name: No Rclone Cache
+      if: steps.restoreCache.outputs.cache-hit != 'true'
+      run: |
+        mkdir -p ~/.config/rclone
+        echo '${{ secrets.RCLONE_CONFIG }}' > ~/.config/rclone/rclone.conf
+
+    - name: Refresh Expiry Date
+      id: refreshDate
+      run: |
+        curl https://rclone.org/install.sh | sudo bash
+        rclone about onedrive:
+        EXPIRY=$(jq -r '.expiry' <(sed -En 's/.*token = (.*)/\1/p' ~/.config/rclone/rclone.conf))
+        echo "expiry=$EXPIRY" >> $GITHUB_OUTPUT
+
+    - name: Save Rclone Cache
+      uses: actions/cache/save@main
+      with:
+        path: ~/.config/rclone/rclone.conf
+        key: rcloneConf_${{ steps.refreshDate.outputs.expiry }}
+
     - name: Get Commit Hash
       id: getHash
       run: |
-        commitHash=$(curl -s "https://api.github.com/repos/${REPO_PATH}/commits/${REPO_BRANCH}" | jq -r '.sha' | cut -c1-8)
+        commitHash=$(curl -s "https://api.github.com/repos/${REPO_PATH}/commits/${REPO_BRANCH}" | jq -r '.sha')
         echo "commitHash=$commitHash" >> $GITHUB_OUTPUT
 
     - name: Compare Commit Hash
@@ -37,43 +64,11 @@ jobs:
       with:
         path: .commitHash
         key: commitHash_${{ steps.getHash.outputs.commitHash }}
-        restore-keys: commitHash_${{ steps.getHash.outputs.commitHash }}
 
     - name: Save New Commit Hash
       if: steps.cacheHash.outputs.cache-hit != 'true'
       run: |
         echo ${{ steps.getHash.outputs.commitHash }} | tee .commitHash
-
-    - name: Restore Rclone Cache
-      id: rcloneCache
-      uses: actions/cache@main
-      with:
-        path: ~/.config/rclone/rclone.conf
-        key: commitHash_${{ steps.getHash.outputs.commitHash }}
-        restore-keys: commitHash
-
-    - name: Debug Cache Hit
-      run: echo "Rclone cache-hit value:${{ steps.rcloneCache.outputs.cache-hit }}"
-      
-    - name: No Rclone Cache
-      if: steps.rcloneCache.outputs.cache-hit != 'true'
-      run: |
-        mkdir -p ~/.config/rclone
-        echo '${{ secrets.RCLONE_CONFIG }}' > ~/.config/rclone/rclone.conf
-
-    - name: Refresh Expiry Date
-      id: extractDate
-      run: |
-        curl https://rclone.org/install.sh | sudo bash
-        rclone about onedrive:
-        EXPIRY=$(jq -r '.expiry' <(sed -En 's/.*token = (.*)/\1/p' ~/.config/rclone/rclone.conf) | date -f - +%y%m%d%H)
-        echo "expiry=$EXPIRY" >> $GITHUB_OUTPUT
-
-    - name: Save Rclone Cache
-      uses: actions/cache/save@main
-      with:
-        path: ~/.config/rclone/rclone.conf
-        key: commitHash_${{ steps.getHash.outputs.commitHash }}_rcloneConf_${{ steps.extractDate.outputs.expiry }}
 
     - name: Trigger build
       if: steps.cacheHash.outputs.cache-hit != 'true'
