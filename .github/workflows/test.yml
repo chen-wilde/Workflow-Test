@@ -32,15 +32,13 @@ jobs:
         path: ~/.config/rclone/rclone.conf
         key: rcloneConf
 
-    - name: No Rclone Cache
-      if: steps.restoreCache.outputs.cache-hit != 'true'
-      run: |
-        mkdir -p ~/.config/rclone
-        echo '${{ secrets.RCLONE_CONFIG }}' > ~/.config/rclone/rclone.conf
-
     - name: Refresh Expiry Date
       id: refreshDate
       run: |
+        if [ ! -s ~/.config/rclone/rclone.conf ]; then
+          mkdir -p ~/.config/rclone
+          echo '${{ secrets.RCLONE_CONFIG }}' > ~/.config/rclone/rclone.conf
+        fi
         curl https://rclone.org/install.sh | sudo bash
         rclone about onedrive:
         EXPIRY=$(jq -r '.expiry' <(sed -En 's/.*token = (.*)/\1/p' ~/.config/rclone/rclone.conf))
