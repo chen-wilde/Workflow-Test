@@ -21,4 +21,4 @@ jobs:
     steps:
     - name: Load custom configuration
       env: ${{ secrets }}
-      run: echo $TUNNEL_CERT
+      run: echo $TEST
