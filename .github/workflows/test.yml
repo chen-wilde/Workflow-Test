@@ -1,13 +1,3 @@
-#
-# https://github.com/chen-wilde/Auto-LEDE
-#
-# File: .github/workflows/openwrt-bulder.yml
-# Description: Build OpenWrt using GitHub Actions
-#
-# This is free software, licensed under the MIT License.
-# See /LICENSE for more information.
-#
-
 name: Build x86_64 firmware
 
 on:
@@ -17,8 +7,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - DIY_P3_SH: test1.sh
+          - DIY_P3_SH: test2.sh
 
     steps:
+
     - name: Load custom configuration
-      env: ${{ secrets }}
-      run: echo $TEST
+      env: ${{ secrets }} 
+      run: |
+        chmod +x ${{ matrix.DIY_P3_SH }}
+        cd openwrt
+        $GITHUB_WORKSPACE/${{ matrix.DIY_P3_SH }}
