@@ -27,9 +27,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        DIY_P3_SH: diy-part1.sh
 
     steps:
     - name: Load custom configuration
