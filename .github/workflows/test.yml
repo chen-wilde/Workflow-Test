@@ -21,5 +21,4 @@ jobs:
       env: ${{ secrets }} 
       run: |
         chmod +x ${{ matrix.DIY_P3_SH }}
-        cd openwrt
         $GITHUB_WORKSPACE/${{ matrix.DIY_P3_SH }}
