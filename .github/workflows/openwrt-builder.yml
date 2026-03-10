@@ -48,6 +48,14 @@ jobs:
         sudo chown $USER:$GROUPS $GITHUB_WORKSPACE
         git clone $REPO_URL -b $REPO_BRANCH openwrt
 
+    - name: Show Python environment
+      run: |
+        python3 --version
+        pip3 --version
+        pip3 list | grep -i setuptools
+        which python3
+        echo "PYTHONPATH: $PYTHONPATH"
+
     - name: Cache
       uses: klever1988/cachewrtbuild@main
       with:
