@@ -33,6 +33,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Free runner space
+      uses: justinthelaw/maximize-github-runner-space@main
+      with:
+        skip-components: java,browsers,docker-engine
+
     - name: Checkout
       uses: actions/checkout@main
 
