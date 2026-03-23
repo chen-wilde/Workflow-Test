@@ -1,28 +1,18 @@
-#
-# https://github.com/chen-wilde/Auto-LEDE
-#
-# File: .github/workflows/build-h68k.yml
-# Description: Build OpenWrt using GitHub Actions
-#
-# This is free software, licensed under the MIT License.
-# See /LICENSE for more information.
-# 10G
-
-name: Build firmware
+name: Build nx30p firmware
 
 on:
   repository_dispatch:
   workflow_dispatch:
 
 env:
-  REPO_URL: https://git.openwrt.org/openwrt/openwrt.git
+  REPO_URL: https://git.openwrt.org/openwrt/openwrt
   REPO_BRANCH: main
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: h68k.config
-  DEVICE: HinLink_H68K
+  CONFIG_FILE: nx30p.config
+  DEVICE: NX30_PRO
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
-  DIY_P3_SH: h68k.sh
+  DIY_P3_SH: nx30p.sh
   UPLOAD_ONEDRIVE: false
   UPLOAD_RELEASE: true
   ONEDRIVE_DIR: onedrive:Build
@@ -33,10 +23,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Free runner space
-      uses: justinthelaw/maximize-github-runner-space@main
+    - name: Free disk space
+      uses: jlumbroso/free-disk-space@main
       with:
-        skip-components: java,browsers,docker-engine
+        tool-cache: true
+        android: true
+        dotnet: true
+        haskell: true
+        large-packages: true
+        docker-images: true
+        swap-storage: true
 
     - name: Checkout
       uses: actions/checkout@main
@@ -52,21 +48,17 @@ jobs:
         sudo -E apt-get -qq clean
         sudo timedatectl set-timezone "$TZ"
         sudo chown $USER:$GROUPS $GITHUB_WORKSPACE
-        git clone $REPO_URL -b $REPO_BRANCH openwrt
 
-    - name: Show Python environment
+    - name: Clone source code
       run: |
-        python3 --version
-        pip3 --version
-        pip3 list | grep -i setuptools
-        which python3
-        echo "PYTHONPATH: $PYTHONPATH"
+        df -hT $PWD
+        git clone $REPO_URL -b $REPO_BRANCH openwrt
 
     - name: Cache
       uses: klever1988/cachewrtbuild@main
       with:
         ccache: true
-        mixkey: h68k
+        mixkey: nx30p
         prefix: ${{ github.workspace }}/openwrt
 
     - name: Load custom feeds
@@ -105,8 +97,6 @@ jobs:
       run: |
         cd openwrt
         echo -e "$(nproc) thread compile"
-        make tools/install
-        make package/feeds/packages/python-setuptools/host/compile
         make -j$(nproc) || make -j1 || make -j1 V=s
         echo "status=success" >> $GITHUB_OUTPUT
         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
