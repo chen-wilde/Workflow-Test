@@ -1,1 +1,2 @@
+sed -i 's/\${defaults ? 0 : 1}/0/g' package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
 sed -i 's/4000000>/7280000>/' target/linux/mediatek/dts/mt7981b-h3c-magic-nx30-pro.dts package/boot/uboot-mediatek/patches/435-add-h3c_magic-nx30-pro.patch
