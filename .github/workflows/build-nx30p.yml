@@ -133,6 +133,8 @@ jobs:
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
+        repository: chen-wilde/Releases
+        token: ${{ secrets.RELEASES }}
         files: openwrt/bin/targets/*/*/*
 
     - name: Delete workflow runs

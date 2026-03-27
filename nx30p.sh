@@ -11,7 +11,7 @@ sed -i "s/enabled '0'/enabled '1'/;s/token ''/token '$TUN30P_TOKEN'/" cloudflare
 echo "$ACME_CONF" > acme-common/files/acme.config
 echo "$DDNS_CONF" > ddns-scripts/files/etc/config/ddns
 
-cd ~/openwrt/package
+cd ../../../package
 sed -i "s/uhttpd.crt/$DOMAIN.fullchain.crt/;s/uhttpd.key/$DOMAIN.key/" network/services/uhttpd/files/uhttpd.config
 cat >> network/config/firewall/files/firewall.config << EOF
 
