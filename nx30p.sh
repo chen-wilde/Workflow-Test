@@ -3,6 +3,7 @@ sed -i 's/4000000>/7280000>/' target/linux/mediatek/dts/mt7981b-h3c-magic-nx30-p
 mkdir -p files/etc/{config,cloudflared}
 echo "$WIRELESS_CONF" > files/etc/config/wireless
 echo "$TUNNEL_CERT" > files/etc/cloudflared/cert.pem
+echo "$HTTPS_FW4" > files/etc/firewall
 
 cd feeds/packages/net
 sed -i "s/enabled '0'/enabled '1'/" banip/files/banip.conf
@@ -13,17 +14,7 @@ echo "$DDNS_CONF" > ddns-scripts/files/etc/config/ddns
 
 cd ../../../package
 sed -i "s/uhttpd.crt/$DOMAIN.fullchain.crt/;s/uhttpd.key/$DOMAIN.key/" network/services/uhttpd/files/uhttpd.config
-cat >> network/config/firewall/files/firewall.config << EOF
-
-config redirect
-	option name			https
-	option src			wan
-	option src_dport	1443
-	option dest			lan
-	option dest_ip		192.168.1.1
-	option dest_port	443
-	option target		DNAT
-EOF
+sed -i '/-s "$UHTTPD_CERT"/,/}/d' network/services/uhttpd/files/uhttpd.init
 
 cd base-files/files
 sed -i 's/-dhcp/-pppoe/' lib/functions/uci-defaults.sh
