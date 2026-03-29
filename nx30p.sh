@@ -3,7 +3,7 @@ sed -i 's/4000000>/7280000>/' target/linux/mediatek/dts/mt7981b-h3c-magic-nx30-p
 mkdir -p files/etc/{config,cloudflared}
 echo "$WIRELESS_CONF" > files/etc/config/wireless
 echo "$TUNNEL_CERT" > files/etc/cloudflared/cert.pem
-echo "$HTTPS_FW4" > files/etc/firewall
+echo "$HTTPS_FW4" > files/etc/config/firewall
 
 cd feeds/packages/net
 sed -i "s/enabled '0'/enabled '1'/" banip/files/banip.conf
