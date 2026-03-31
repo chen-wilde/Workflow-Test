@@ -19,4 +19,5 @@ echo "$ACME_CONF" > acme-common/files/acme.config
 echo "$DDNS_CONF" > ddns-scripts/files/etc/config/ddns
 
 sed -i "s/enabled '0'/enabled '1'/" banip/files/banip.conf
+sed -i '/acme.issue/a\    service uhttpd restart' acme-common/files/acme-notify.sh
 sed -i "s/enabled '0'/enabled '1'/;s/token ''/token '$TUN30P_TOKEN'/" cloudflared/files/cloudflared.config
