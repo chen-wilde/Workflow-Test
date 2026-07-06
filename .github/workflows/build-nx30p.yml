@@ -58,7 +58,7 @@ jobs:
       uses: klever1988/cachewrtbuild@main
       with:
         ccache: true
-        mixkey: nx30p-test
+        mixkey: nx30p
         prefix: ${{ github.workspace }}/openwrt
 
     - name: Load custom feeds
@@ -88,7 +88,7 @@ jobs:
       id: package
       run: |
         cd openwrt
-        echo -e 'CONFIG_DEVEL=y\nCONFIG_CCACHE=y' >> .config; make defconfig
+        echo -e '\nCONFIG_DEVEL=y\nCONFIG_CCACHE=y' >> .config; make defconfig
         echo "=== CCACHE STATUS BEFORE BUILD ==="
         ccache -s -v
         make download -j8
