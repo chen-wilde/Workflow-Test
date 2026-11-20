@@ -1,1 +1,1 @@
-bzip2 g++ gawk gcc git glibc-source libncurses-dev make
+bzip2 ccache g++ gawk gcc git glibc-source libncurses-dev make qemu-utils

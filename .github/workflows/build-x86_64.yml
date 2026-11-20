@@ -1,4 +1,4 @@
-name: Build x86_64 firmware
+name: Build x86_64 firmware 5G
 
 on:
   repository_dispatch:
@@ -40,6 +40,7 @@ jobs:
         DEBIAN_FRONTEND: noninteractive
       run: |
         sudo docker image prune --all --force
+        command -v ccache && ccache --version
         sudo -E apt-get -qq update
         sudo -E apt-get -qq install $(cat deps)
         sudo -E apt-get -qq autoremove --purge
