@@ -1,4 +1,4 @@
-name: Build x86_64 firmware 6G
+name: Build x86_64 firmware 7G
 
 on:
   repository_dispatch:
