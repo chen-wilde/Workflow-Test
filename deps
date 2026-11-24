@@ -1,1 +1,1 @@
-bzip2 ccache g++ gawk gcc git glibc-source libncurses-dev make qemu-utils
+bzip2 ccache g++ gawk gcc git glibc-source libncurses-dev make python3-pyelftools qemu-utils
